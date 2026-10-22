@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1d0609">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Touch to Unveil · APPSCON 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Figtree:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+body{overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;user-select:none;-webkit-user-select:none;
+  padding:max(20px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  background:radial-gradient(90% 60% at 50% 45%,#4a0c14 0%,#1d0609 55%,var(--night) 100%)}
+.head{display:flex;flex-direction:column;align-items:center;gap:6px}
+.head .t{font-family:var(--display);font-weight:600;font-size:clamp(28px,5vw,42px);line-height:1}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);font-size:14px;color:var(--muted);background:rgba(0,0,0,.25)}
+.mid{flex:1;display:grid;place-items:center;width:100%}
+.unveil{position:relative;width:min(62vmin,440px);aspect-ratio:1;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 35%,var(--gold-hi),var(--gold) 45%,#9a7232 100%);color:#2a1406;
+  box-shadow:0 0 0 10px rgba(216,176,98,.12),0 0 0 22px rgba(216,176,98,.06),0 20px 60px rgba(0,0,0,.6),inset 0 -10px 30px rgba(90,50,10,.45);transition:transform .15s;touch-action:manipulation}
+.unveil:active{transform:scale(.97)}
+.unveil::after{content:"";position:absolute;inset:-22px;border-radius:50%;border:2px solid rgba(243,217,147,.55);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.9);opacity:.9}100%{transform:scale(1.18);opacity:0}}
+.in{display:flex;flex-direction:column;gap:4px;align-items:center}
+.big{font-family:var(--display);font-weight:700;font-size:clamp(32px,8vmin,56px);line-height:1}
+.sm{font-size:clamp(13px,2.4vmin,16px);letter-spacing:.24em;text-transform:uppercase;font-weight:600}
+.done{display:flex;flex-direction:column;align-items:center;gap:14px}
+.ring{width:min(38vmin,230px);aspect-ratio:1;border-radius:50%;border:3px solid var(--gold);display:grid;place-items:center;font-family:var(--display);font-size:clamp(28px,7vmin,48px);color:var(--gold-hi);animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.done p{margin:0;color:var(--muted);font-size:17px}
+.foot{display:flex;flex-direction:column;align-items:center;gap:10px;min-height:44px}
+.link{background:none;border:none;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:14px;padding:8px}
+.confirm{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px;font-size:15px}
+@media (prefers-reduced-motion:reduce){.unveil::after{animation:none}}
+</style>
+</head>
+<body>
+<div class="head">
+  <div class="eyebrow">APPSCON 2026 · Inauguration</div>
+  <div class="t">e-Souvenir</div>
+  <div class="chip"><span class="dot" id="dot"></span><span id="stat">Looking for the auditorium screen…</span></div>
+</div>
+<div class="mid">
+  <button class="unveil" id="unveil" type="button" aria-label="Touch to unveil the e-Souvenir"><span class="in"><span class="sm">Touch to</span><span class="big">Unveil</span></span></button>
+  <div class="done" id="done" hidden><div class="ring">Unveiled</div><p>The e-Souvenir is now on the big screen.</p></div>
+</div>
+<div class="foot">
+  <button class="link" id="reset" type="button" hidden>Reset for rehearsal</button>
+  <div class="confirm" id="confirm" hidden><span>Close the curtain on the big screen?</span><button class="btn primary" id="yes" type="button">Close curtain</button><button class="btn" id="no" type="button">Cancel</button></div>
+  <div class="err" id="err" hidden></div>
+</div>
+<script src="relay.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let revealed = false, lastPong = 0, busy = false;
+  function ui(){ $("unveil").hidden = revealed; $("done").hidden = !revealed; $("reset").hidden = !revealed || !$("confirm").hidden; }
+  function err(m){ $("err").textContent = m || ""; $("err").hidden = !m; }
+  function paint(){
+    const screenUp = lastPong && Date.now() - lastPong < 4 * 60000;
+    $("dot").classList.toggle("on", !!screenUp);
+    $("stat").textContent = !RELAY.isConnected() ? "Connecting… check the Wi-Fi" : screenUp ? "Screen connected" : "Auditorium screen not open yet";
+  }
+  function ping(){ RELAY.send({ t: "ping" }); }
+  RELAY.on(m => {
+    if (m.t === "pong"){ lastPong = Date.now(); if (!busy){ revealed = m.state !== "closed"; ui(); } paint(); }
+  });
+  RELAY.onStatus(ok => { paint(); if (ok) ping(); });
+  setInterval(() => { if (document.visibilityState === "visible") ping(); }, 120000);
+  setInterval(paint, 15000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") ping(); });
+
+  $("unveil").addEventListener("click", async () => {
+    if (revealed) return;
+    err(""); revealed = true; busy = true; ui();
+    if (navigator.vibrate) try { navigator.vibrate(60); } catch (e) {}
+    const ok = await RELAY.send({ t: "unveil", seq: Date.now() }, 3);
+    busy = false;
+    if (!ok){ revealed = false; ui(); err("The signal didn't go through. Check the Wi-Fi and touch again, or ask the AV desk to press Space on the laptop."); }
+  });
+  $("reset").addEventListener("click", () => { $("confirm").hidden = false; ui(); });
+  $("no").addEventListener("click", () => { $("confirm").hidden = true; ui(); });
+  $("yes").addEventListener("click", async () => {
+    $("confirm").hidden = true; err("");
+    const ok = await RELAY.send({ t: "close", seq: Date.now() });
+    if (ok){ revealed = false; } else err("Couldn't reach the screen. Try again.");
+    ui();
+  });
+  keepAwake(); ui(); paint();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+:root{
+  --night:#0b0708; --gold:#d8b062; --gold-hi:#f3d993; --ivory:#f6efe2; --muted:#b8a99a;
+  --ok:#7fd49b; --warn:#f0b35a; --line:rgba(216,176,98,.28);
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --body:"Figtree","Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+[hidden]{display:none!important}
+body{background:var(--night);color:var(--ivory);font-family:var(--body);-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold-hi);outline-offset:3px}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--warn);flex:none}
+.dot.on{background:var(--ok)}
+.btn{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.05);cursor:pointer;font-size:13px}
+.btn:hover{border-color:var(--gold)}
+.btn.primary{background:var(--gold);color:#1a0d07;border-color:var(--gold);font-weight:600}
+.err{color:var(--warn);line-height:1.45;font-size:14px}
