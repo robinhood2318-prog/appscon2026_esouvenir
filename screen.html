@@ -14,7 +14,7 @@ body.idle{cursor:none}
 .backdrop{position:absolute;inset:0;background:
   radial-gradient(42% 60% at 50% 38%,rgba(255,226,170,.22),transparent 70%),
   radial-gradient(70% 90% at 50% 100%,#2a0b0e 0%,#0b0506 70%)}
-.cover-wrap{position:absolute;left:12%;right:12%;top:13%;bottom:5%;display:grid;place-items:center;transform:scale(1.05);filter:brightness(.5);transition:transform 3s cubic-bezier(.2,.7,.2,1),filter 2.4s ease}
+.cover-wrap{position:absolute;left:8%;right:8%;top:5%;bottom:5%;display:grid;place-items:center;transform:scale(1.05);filter:brightness(.5);transition:transform 3s cubic-bezier(.2,.7,.2,1),filter 2.4s ease}
 .stage.lit .cover-wrap{transform:scale(1);filter:brightness(1)}
 .cover-wrap img{max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 2.5vmin 6vmin rgba(0,0,0,.65);border-radius:.4vmin}
 .cover-card{height:100%;aspect-ratio:1/1.414;max-width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2%;text-align:center;
@@ -30,7 +30,6 @@ video{object-fit:cover;background:transparent}
 .fb .r{right:0;background-image:url(assets/right.jpg);transform-origin:right;transition-delay:.08s}
 .fb.open .l{transform:translateX(-100%)}
 .fb.open .r{transform:translateX(100%)}
-.fb img{position:absolute;inset:0;width:100%;height:100%}
 .go{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55);z-index:5}
 .go button{padding:18px 30px;border-radius:999px;border:1px solid var(--gold);background:rgba(20,8,10,.9);font-size:18px;font-weight:600;cursor:pointer}
 .go small{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:6px}
@@ -51,13 +50,13 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
     <div class="cover-card" id="card"><div class="k">APPSCON 2026</div><div class="t">e-Souvenir</div><div class="s">Unveiled today</div><div class="n">Add assets/cover.jpg to show the real cover</div></div>
   </div>
   <video id="vid" src="assets/curtain.webm" playsinline preload="auto"></video>
-  <div class="fb" id="fb" hidden><div class="p l"></div><div class="p r"></div><img src="assets/valance.webp" alt=""></div>
+  <div class="fb" id="fb" hidden><div class="p l"></div><div class="p r"></div></div>
   <div class="go" id="go"><button type="button" id="goBtn">Go full screen<small>Click once to start. The curtain waits for the tablet.</small></button></div>
 </div>
 
 <div class="ops" id="ops" role="region" aria-label="Operator controls">
   <h3>Operator panel</h3>
-  <div class="stat"><span class="dot" id="dRelay"></span><span id="sRelay">Connecting to the relay…</span></div>
+  <div class="stat"><span class="dot" id="dRelay"></span><span id="sRelay">Connecting…</span></div>
   <div class="stat"><span class="dot" id="dTab"></span><span id="sTab">Tablet not seen yet</span></div>
   <div class="row">
     <button class="btn" id="bFull" type="button">Full screen</button>
@@ -67,6 +66,8 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
   <div class="note">Backup: press <kbd>Space</kbd>, <kbd>→</kbd> or the slide clicker to open the curtain. <kbd>R</kbd> closes it. This panel hides when the mouse is still.</div>
 </div>
 
+<script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
+<script>window.RELAY_ROLE = "screen";</script>
 <script src="relay.js"></script>
 <script>
 (() => {
@@ -89,7 +90,7 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
     if (state !== "closed") return;
     state = animate ? "opening" : "open";
     if (useFallback){ fb.classList.add("open"); }
-    else if (animate){ vid.currentTime = 0; vid.muted = false; vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); }); }
+    else if (animate){ if (vid.currentTime > 0.01) vid.currentTime = 0; vid.muted = false; vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); }); }
     else { try { vid.currentTime = Math.max(0, (vid.duration || 10) - 0.05); } catch (e) {} }
     clearTimeout(litT); litT = setTimeout(() => stage.classList.add("lit"), animate ? 900 : 0);
     if (useFallback) setTimeout(() => { state = "open"; announce(); }, 4000);
@@ -100,14 +101,14 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
     vid.pause(); try { vid.currentTime = 0; } catch (e) {}
     fb.classList.remove("open"); announce();
   }
-  function announce(){ RELAY.send({ t: "pong", state }); }
+  function announce(){ RELAY.setStatus({ state }); RELAY.send({ t: "pong", state }); }
 
   RELAY.on(m => {
     if (m.t === "unveil" && m.seq !== lastSeq){ lastSeq = m.seq; open(true); }
     else if (m.t === "close" && m.seq !== lastSeq){ lastSeq = m.seq; close(); }
     else if (m.t === "ping"){ tabSeen = Date.now(); paintTab(); announce(); }
   });
-  RELAY.onStatus(ok => { $("dRelay").classList.toggle("on", ok); $("sRelay").textContent = ok ? "Relay connected. Waiting for the tablet" : "Connecting to the relay…"; });
+  RELAY.onConnection(ok => { $("dRelay").classList.toggle("on", ok); $("sRelay").textContent = !ok ? "Connecting… check the internet" : RELAY.fastPath() ? "Linked (fast). Waiting for the tablet" : "Linked (backup path, about 1 s slower)"; if (ok) announce(); });
   function paintTab(){
     const age = tabSeen ? Math.round((Date.now() - tabSeen) / 60000) : null;
     const ok = tabSeen && Date.now() - tabSeen < 4 * 60000;
@@ -124,11 +125,11 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
   $("goBtn").addEventListener("click", async () => { await full(); $("go").hidden = true; keepAwake(); vid.load(); poke(); });
   $("bFull").addEventListener("click", full);
   $("bTest").addEventListener("click", () => { close(); setTimeout(() => open(true), 200); });
-  $("bClose").addEventListener("click", () => { close(); RELAY.send({ t: "close", seq: Date.now() }); });
+  $("bClose").addEventListener("click", () => { close(); RELAY.send({ t: "close", seq: Date.now() }, { critical: true }); });
   document.addEventListener("keydown", e => {
     if (e.target.tagName === "BUTTON" && (e.key === " " || e.key === "Enter")) return;
     if ([" ", "ArrowRight", "PageDown", "Enter"].includes(e.key)){ e.preventDefault(); $("go").hidden = true; open(true); }
-    else if (e.key === "r" || e.key === "R"){ close(); RELAY.send({ t: "close", seq: Date.now() }); }
+    else if (e.key === "r" || e.key === "R"){ close(); RELAY.send({ t: "close", seq: Date.now() }, { critical: true }); }
     else if (e.key === "f" || e.key === "F"){ full(); }
   });
   poke(); setTimeout(announce, 1500);
