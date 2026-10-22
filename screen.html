@@ -15,8 +15,8 @@ body.live.showops{cursor:default}
 .backdrop{position:absolute;inset:0;background:
   radial-gradient(42% 60% at 50% 38%,rgba(255,226,170,.22),transparent 70%),
   radial-gradient(70% 90% at 50% 100%,#2a0b0e 0%,#0b0506 70%)}
-.cover-wrap{position:absolute;left:8%;right:8%;top:5%;bottom:5%;display:grid;place-items:center;transform:scale(1.05);filter:brightness(.5);transition:transform 3s cubic-bezier(.2,.7,.2,1),filter 2.4s ease}
-.stage.lit .cover-wrap{transform:scale(1);filter:brightness(1)}
+.cover-wrap{position:absolute;left:8%;right:8%;top:5%;bottom:5%;display:grid;place-items:center;filter:brightness(.5);transition:filter 2.4s ease}
+.stage.lit .cover-wrap{filter:brightness(1)}
 .cover-wrap img{max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 2.5vmin 6vmin rgba(0,0,0,.65);border-radius:.4vmin}
 .cover-card{height:100%;aspect-ratio:1/1.414;max-width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2%;text-align:center;
   background:radial-gradient(90% 70% at 50% 30%,#2b3a6b,#121a36 75%);border:.35vmin solid var(--gold);box-shadow:0 2.5vmin 6vmin rgba(0,0,0,.65);padding:6%}
@@ -56,7 +56,7 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
 </div>
 
 <div class="ops" id="ops" role="region" aria-label="Operator controls">
-  <h3>Operator panel · v4</h3>
+  <h3>Operator panel · v5</h3>
   <div class="stat"><span class="dot" id="dRelay"></span><span id="sRelay">Connecting…</span></div>
   <div class="stat"><span class="dot" id="dTab"></span><span id="sTab">Tablet not seen yet</span></div>
   <div class="row">
