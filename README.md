@@ -20,7 +20,7 @@ Note: anything in a public repository can be seen by anyone who finds it. Upload
 
 ## Backups on the day
 - On the laptop, press **Space**, **→** or the slide clicker to open the curtain. Press **R** to close it again.
-- The operator panel is hidden. Press **P** on the laptop to show or hide it; its title shows the version (v8).
+- The operator panel is hidden. Press **P** on the laptop to show or hide it; its title shows the version (v9).
 - If the laptop browser can't play the video, it falls back to a simple slide-apart curtain.
 
 ## How the link works
