@@ -29,14 +29,14 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
 <div class="stage" id="stage">
   <!-- the whole approved sequence: closed curtain with title → curtain opens with applause → cover → page curls → Thank-you page -->
   <video id="vid" playsinline preload="auto">
-    <source src="assets/unveil-v10.mp4" type="video/mp4">
-    <source src="assets/unveil-v10.webm" type="video/webm">
+    <source src="assets/unveil-v12.mp4" type="video/mp4">
+    <source src="assets/unveil-v12.webm" type="video/webm">
   </video>
   <div class="go" id="go"><button type="button" id="goBtn">Go full screen<small>Click once to start. After that, press P to show or hide the operator panel.</small></button></div>
 </div>
 
 <div class="ops" id="ops" role="region" aria-label="Operator controls">
-  <h3>Operator panel · v10</h3>
+  <h3>Operator panel · v12</h3>
   <div class="stat"><span class="dot" id="dRelay"></span><span id="sRelay">Connecting…</span></div>
   <div class="stat"><span class="dot" id="dTab"></span><span id="sTab">Tablet not seen yet</span></div>
   <div class="stat"><span class="dot" id="dVid"></span><span id="sVid">Loading video…</span></div>
@@ -79,7 +79,7 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
       vid.muted = false;
       vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
     } else {
-      try { vid.currentTime = Math.max(0, (vid.duration || 32) - 0.05); } catch (e) {}
+      try { vid.currentTime = Math.max(0, (vid.duration || 33.5) - 0.05); } catch (e) {}
     }
     announce();
   }

@@ -15,12 +15,12 @@ The auditorium laptop shows the closed curtain with the title. When someone touc
   - **Quick:** open the link and tap **Tap to go full screen** before handing over the tablet. A back swipe leaves full screen, so do this last.
 
 ## The video
-The whole sequence is one video, `assets/unveil-v10.mp4`, with a WebM copy `assets/unveil-v10.webm` for browsers that can't play MP4. It is the same video as the PowerPoint backup. The cover and pages are part of it, so no separate cover image is needed.
+The whole sequence is one video, `assets/unveil-v12.mp4`, with a WebM copy `assets/unveil-v12.webm` for browsers that can't play MP4. It is the same video as the PowerPoint backup. The cover and pages are part of it, so no separate cover image is needed.
 Note: anything in a public repository can be seen by anyone who finds it.
 
 ## Backups on the day
 - On the laptop, press **Space**, **→** or the slide clicker to start. Press **R** to go back to the closed curtain.
-- The operator panel is hidden. Press **P** on the laptop to show or hide it; its title shows the version (v10) and whether the video has fully loaded ("Video ready").
+- The operator panel is hidden. Press **P** on the laptop to show or hide it; its title shows the version (v12) and whether the video has fully loaded ("Video ready").
 
 ## How the link works
 The two pages keep an always-open connection through the free HiveMQ public broker, so the curtain opens about 0.2 s after the touch.
