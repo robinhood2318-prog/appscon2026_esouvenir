@@ -1,6 +1,6 @@
 # APPSCON 2026 – e-Souvenir Unveiling (GitHub Pages)
 
-The auditorium laptop shows a closed curtain. When someone touches the button on the tablet, the curtain video plays and reveals the e-Souvenir cover.
+The auditorium laptop shows the closed curtain with the title. When someone touches the button on the tablet, the full unveiling video plays (curtain opens with applause, cover, page turns, Thank-you page) and stays on the last page.
 
 ## Put it online (one time, about 5 minutes)
 1. Sign in at github.com. Click **+ → New repository**, name it `esouvenir`, set it to **Public**, and click **Create repository**.
@@ -14,14 +14,13 @@ The auditorium laptop shows a closed curtain. When someone touches the button on
   - **Best:** in Chrome, tap **⋮ → Add to Home screen → Install**, then open **Unveil** from the home-screen icon. It opens full screen with no browser bar.
   - **Quick:** open the link and tap **Tap to go full screen** before handing over the tablet. A back swipe leaves full screen, so do this last.
 
-## Add the cover
-Name the cover image `cover.jpg` (or `cover.png`) and upload it into the `assets` folder of the repository. The site picks it up automatically.
-Note: anything in a public repository can be seen by anyone who finds it. Upload the cover close to the event if it must stay secret.
+## The video
+The whole sequence is one video, `assets/unveil-v10.mp4`, with a WebM copy `assets/unveil-v10.webm` for browsers that can't play MP4. It is the same video as the PowerPoint backup. The cover and pages are part of it, so no separate cover image is needed.
+Note: anything in a public repository can be seen by anyone who finds it.
 
 ## Backups on the day
-- On the laptop, press **Space**, **→** or the slide clicker to open the curtain. Press **R** to close it again.
-- The operator panel is hidden. Press **P** on the laptop to show or hide it; its title shows the version (v9).
-- If the laptop browser can't play the video, it falls back to a simple slide-apart curtain.
+- On the laptop, press **Space**, **→** or the slide clicker to start. Press **R** to go back to the closed curtain.
+- The operator panel is hidden. Press **P** on the laptop to show or hide it; its title shows the version (v10) and whether the video has fully loaded ("Video ready").
 
 ## How the link works
 The two pages keep an always-open connection through the free HiveMQ public broker, so the curtain opens about 0.2 s after the touch.

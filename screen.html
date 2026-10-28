@@ -5,35 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Auditorium Screen · e-Souvenir Unveiling</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Figtree:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css?v=4">
 <style>
 body{overflow:hidden;background:#000;display:grid;place-items:center}
 body.live{cursor:none}
 body.live.showops{cursor:default}
 .stage{position:relative;width:min(100vw,calc(100vh*16/9));aspect-ratio:16/9;overflow:hidden;background:#000}
-.backdrop{position:absolute;inset:0;background:#000 radial-gradient(ellipse 36% 62% at 50% 45%,
-  rgb(150,150,158) 0%,rgb(95,95,100) 25%,rgb(50,50,53) 50%,rgb(16,16,17) 75%,#000 100%)}
-.cover-wrap{position:absolute;left:8%;right:8%;top:5%;bottom:5%;display:grid;place-items:center;filter:brightness(.5);transition:filter 2.4s ease}
-.stage.lit .cover-wrap{filter:brightness(1)}
-.cover-wrap img{max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 2.5vmin 6vmin rgba(0,0,0,.65);border-radius:.4vmin}
-.cover-card{height:100%;aspect-ratio:1/1.414;max-width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2%;text-align:center;
-  background:radial-gradient(90% 70% at 50% 30%,#2b3a6b,#121a36 75%);border:.35vmin solid var(--gold);box-shadow:0 2.5vmin 6vmin rgba(0,0,0,.65);padding:6%}
-.cover-card .k{font-size:1.5vmin;letter-spacing:.35em;text-transform:uppercase;color:var(--gold)}
-.cover-card .t{font-family:var(--display);font-weight:700;font-size:7.4vmin;line-height:.95;color:var(--gold-hi)}
-.cover-card .s{font-family:var(--display);font-style:italic;font-size:3.2vmin}
-.cover-card .n{font-size:1.2vmin;color:var(--muted);margin-top:6%}
-video,.fb{position:absolute;inset:0;width:100%;height:100%}
-video{object-fit:cover;background:transparent}
-.fb .p{position:absolute;top:0;height:100%;width:50%;background-size:100% 100%;transition:transform 3.8s cubic-bezier(.55,0,.25,1)}
-.fb .l{left:0;background-image:url(assets/left.jpg);transform-origin:left}
-.fb .r{right:0;background-image:url(assets/right.jpg);transform-origin:right;transition-delay:.08s}
-.fb.open .l{transform:translateX(-100%)}
-.fb.open .r{transform:translateX(100%)}
+video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
 .go{position:absolute;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55);z-index:5}
 .go button{padding:18px 30px;border-radius:999px;border:1px solid var(--gold);background:rgba(20,8,10,.9);font-size:18px;font-weight:600;cursor:pointer}
 .go small{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:6px}
-.ops{position:fixed;right:14px;bottom:14px;z-index:6;width:min(330px,calc(100vw - 28px));padding:14px;border-radius:12px;background:rgba(14,8,9,.93);border:1px solid var(--line);display:none;flex-direction:column;gap:10px;font-size:13px;transition:opacity .35s}
+.ops{position:fixed;right:14px;bottom:14px;z-index:6;width:min(330px,calc(100vw - 28px));padding:14px;border-radius:12px;background:rgba(14,8,9,.93);border:1px solid var(--line);display:none;flex-direction:column;gap:10px;font-size:13px}
 body.showops .ops{display:flex}
 .ops h3{margin:0;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:600}
 .stat{display:flex;align-items:center;gap:8px;color:var(--muted)}
@@ -44,26 +27,25 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
 </head>
 <body>
 <div class="stage" id="stage">
-  <div class="backdrop"></div>
-  <div class="cover-wrap">
-    <img id="cover" alt="APPSCON 2026 e-Souvenir cover" hidden>
-    <div class="cover-card" id="card"><div class="k">APPSCON 2026</div><div class="t">e-Souvenir</div><div class="s">Unveiled today</div><div class="n">Add assets/cover.jpg to show the real cover</div></div>
-  </div>
-  <video id="vid" src="assets/curtain-v11.webm" playsinline preload="auto"></video>
-  <div class="fb" id="fb" hidden><div class="p l"></div><div class="p r"></div></div>
+  <!-- the whole approved sequence: closed curtain with title → curtain opens with applause → cover → page curls → Thank-you page -->
+  <video id="vid" playsinline preload="auto">
+    <source src="assets/unveil-v10.mp4" type="video/mp4">
+    <source src="assets/unveil-v10.webm" type="video/webm">
+  </video>
   <div class="go" id="go"><button type="button" id="goBtn">Go full screen<small>Click once to start. After that, press P to show or hide the operator panel.</small></button></div>
 </div>
 
 <div class="ops" id="ops" role="region" aria-label="Operator controls">
-  <h3>Operator panel · v9</h3>
+  <h3>Operator panel · v10</h3>
   <div class="stat"><span class="dot" id="dRelay"></span><span id="sRelay">Connecting…</span></div>
   <div class="stat"><span class="dot" id="dTab"></span><span id="sTab">Tablet not seen yet</span></div>
+  <div class="stat"><span class="dot" id="dVid"></span><span id="sVid">Loading video…</span></div>
   <div class="row">
     <button class="btn" id="bFull" type="button">Full screen</button>
     <button class="btn" id="bTest" type="button">Test reveal</button>
     <button class="btn" id="bClose" type="button">Close curtain</button>
   </div>
-  <div class="note">Backup: press <kbd>Space</kbd>, <kbd>→</kbd> or the slide clicker to open the curtain. <kbd>R</kbd> closes it. Press <kbd>P</kbd> to hide this panel.</div>
+  <div class="note">Backup: press <kbd>Space</kbd>, <kbd>→</kbd> or the slide clicker to start. <kbd>R</kbd> goes back to the closed curtain. Press <kbd>P</kbd> to hide this panel.</div>
 </div>
 
 <script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
@@ -72,34 +54,38 @@ kbd{font-family:inherit;border:1px solid var(--line);border-radius:4px;padding:0
 <script>
 (() => {
   const $ = id => document.getElementById(id);
-  const stage = $("stage"), vid = $("vid"), fb = $("fb");
-  let state = "closed", lastSeq = null, useFallback = false, tabSeen = 0, litT = 0;
+  const vid = $("vid");
+  let state = "closed", lastSeq = null, tabSeen = 0;
 
-  /* cover: assets/cover.jpg, else cover.png, else the placeholder card */
-  const cover = $("cover"); const tries = ["assets/cover.jpg", "assets/cover.png"];
-  cover.onload = () => { cover.hidden = false; $("card").hidden = true; };
-  cover.onerror = () => { if (tries.length) cover.src = tries.shift(); };
-  cover.src = tries.shift();
-
-  /* video with transparent background (Chrome/Edge). Anything else uses the slide-apart backup curtain. */
-  vid.addEventListener("error", () => { useFallback = true; vid.hidden = true; fb.hidden = false; });
+  /* show how much of the video is loaded, so the operator knows it will play without pausing */
+  function paintVid(){
+    let pct = 0;
+    try { if (vid.duration && vid.buffered.length) pct = Math.round(100 * vid.buffered.end(vid.buffered.length - 1) / vid.duration); } catch (e) {}
+    const ok = pct >= 99 || vid.readyState >= 4;
+    $("dVid").classList.toggle("on", ok);
+    const failed = vid.networkState === 3;   // NETWORK_NO_SOURCE: neither file could be used
+    $("sVid").textContent = failed ? "Video could not load. Reload the page." : ok ? "Video ready" : "Loading video… " + pct + "%";
+  }
+  ["progress","canplaythrough","loadeddata","error"].forEach(e => vid.addEventListener(e, paintVid));
+  setInterval(paintVid, 2000);
   vid.addEventListener("loadeddata", () => { if (state === "closed") vid.currentTime = 0; });
-  vid.addEventListener("ended", () => { state = "open"; announce(); });
+  vid.addEventListener("ended", () => { state = "open"; announce(); });   // stays on the last page
 
   function open(animate){
     if (state !== "closed") return;
     state = animate ? "opening" : "open";
-    if (useFallback){ fb.classList.add("open"); }
-    else if (animate){ if (vid.currentTime > 0.01) vid.currentTime = 0; vid.muted = false; vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); }); }
-    else { try { vid.currentTime = Math.max(0, (vid.duration || 10) - 0.05); } catch (e) {} }
-    clearTimeout(litT); litT = setTimeout(() => stage.classList.add("lit"), animate ? 900 : 0);
-    if (useFallback) setTimeout(() => { state = "open"; announce(); }, 4000);
+    if (animate){
+      if (vid.currentTime > 0.01) vid.currentTime = 0;
+      vid.muted = false;
+      vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+    } else {
+      try { vid.currentTime = Math.max(0, (vid.duration || 32) - 0.05); } catch (e) {}
+    }
     announce();
   }
   function close(){
-    clearTimeout(litT); state = "closed"; stage.classList.remove("lit");
-    vid.pause(); try { vid.currentTime = 0; } catch (e) {}
-    fb.classList.remove("open"); announce();
+    state = "closed"; vid.pause(); try { vid.currentTime = 0; } catch (e) {}
+    announce();
   }
   function announce(){ RELAY.setStatus({ state }); RELAY.send({ t: "pong", state }); }
 
